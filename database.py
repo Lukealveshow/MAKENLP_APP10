@@ -4,7 +4,7 @@ db_config = {
     'host': 'localhost',
     'user': 'root',
     'password': 'roottupa2023',
-    'database': 'dados'
+    'database': 'data'
 }
 
 def insert_data(name, age, gender, text_summarization, summarized_text, text_generation, question,
@@ -22,3 +22,7 @@ def insert_data(name, age, gender, text_summarization, summarized_text, text_gen
         conn.close()
     except mysql.connector.Error as err:
         print("MySQL Error:", err)
+        raise err
+    except Exception as e:
+        print("Error during data insertion:", e)
+        raise e
