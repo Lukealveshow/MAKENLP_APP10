@@ -2,7 +2,7 @@ import streamlit as st
 from deep_translator import GoogleTranslator
 from summarization import summarize_text
 from generation import generate_answer
-from server import insert_data
+from database import insert_data
 
 db_secrets = st.secrets("connections.mysql")
 
