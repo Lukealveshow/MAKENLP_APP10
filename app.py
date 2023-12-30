@@ -5,6 +5,17 @@ from summarization import summarize_text
 from generation import generate_answer
 import requests
 
+def insert_data_into_database(data):
+    # Função para inserir dados no banco de dados
+    server_url = "http://192.168.0.247:5000/enviar-dados"
+    response = requests.post(server_url, json=data)
+
+    if response.status_code == 200:
+        return True
+    else:
+        print(f"Erro durante a inserção dos dados: {response.text}")
+        return False
+
 def translate_page(language):
     translator = GoogleTranslator(source='auto', target=language)
     translated_title = translator.translate("Seja Bem Vindo ao MAKENLP")
@@ -60,8 +71,6 @@ def translate_page(language):
             answer = generate_answer(question, text_generation)
             translated_text = GoogleTranslator(source='auto', target=language).translate(text_translation)
 
-            # Enviar dados para o servidor Flask
-            server_url = "http://192.168.0.64:5000/enviar-dados"
             dados = {
                 'name': name,
                 'age': age,
@@ -75,12 +84,11 @@ def translate_page(language):
                 'language': language,
                 'translated_text': translated_text
             }
-            response = requests.post(server_url, json=dados)
 
-            if response.status_code == 200:
+            if insert_data_into_database(dados):
                 st.success(translator.translate("Dados inseridos com sucesso!"))
             else:
-                st.error(translator.translate(f"Erro durante a inserção dos dados: {response.text}"))
+                st.error(translator.translate("Erro durante a inserção dos dados"))
         except Exception as e:
             st.error(f"Erro durante a inserção dos dados: {str(e)}")
 
