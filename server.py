@@ -15,7 +15,7 @@ def insert_data_into_database(data):
     try:
         conn = mysql.connector.connect(**db_config)
         cursor = conn.cursor()
-        insert_query = '''INSERT INTO app_data(name, age, gender, text_summarization, summarized_text,
+        insert_query = '''INSERT INTO app_dados(name, age, gender, text_summarization, summarized_text,
                           text_generation, question, answer, text_translation, language, translated_text)
                           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'''
         cursor.execute(insert_query, (
