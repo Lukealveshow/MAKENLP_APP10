@@ -62,7 +62,7 @@ def translate_page(language):
 
             # Enviar dados para o servidor Flask
             server_url = "http://192.168.0.64:5000/enviar-dados"
-            data = {
+            dados = {
                 'name': name,
                 'age': age,
                 'gender': gender,
@@ -75,7 +75,7 @@ def translate_page(language):
                 'language': language,
                 'translated_text': translated_text
             }
-            response = requests.post(server_url, json=data)
+            response = requests.post(server_url, json=dados)
 
             if response.status_code == 200:
                 st.success(translator.translate("Dados inseridos com sucesso!"))
