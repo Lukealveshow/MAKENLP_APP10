@@ -2,7 +2,7 @@ import mysql.connector
 import streamlit as st
 
 # Carrega os segredos do arquivo secrets.toml
-db_secrets = st.secrets("connections.mysql")
+db_secrets = st.secrets["connections.mysql"]
 
 # Utilize os segredos conforme necessário
 db_config = {
