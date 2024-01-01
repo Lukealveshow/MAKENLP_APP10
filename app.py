@@ -1,9 +1,17 @@
 import streamlit as st
+import requests
 from deep_translator import GoogleTranslator
 from summarization import summarize_text
 from generation import generate_answer
 from database3 import insert_data
+def send_data_to_api(data):
+    api_url = "http://localhost:5000/enviar-dados"  # Substitua pela URL da sua API
+    response = requests.post(api_url, json=data)
 
+    if response.status_code == 200:
+        st.success("Dados enviados com sucesso para a API.")
+    else:
+        st.error(f"Erro ao enviar dados para a API. Status code: {response.status_code}")
 def translate_page(language):
     # Using deep_translator for page translation
     translator = GoogleTranslator(source='auto', target=language)
@@ -67,19 +75,33 @@ def translate_page(language):
         st.subheader(translator.translate("Texto Traduzido"))
         st.write(translated_text)
     
-    # Button to execute all functions and insert into the database
-    if st.button(translator.translate("Enviar"), key="botao_enviar"):
+    if st.button(translator.translate("Enviar")):
         summarized_text = summarize_text(text_summarization)
         answer = generate_answer(question, text_generation)
-        translated_text = GoogleTranslator(source='auto', target=selected_language).translate(text_translation)
-        
-        # Utilize a função insert_data do database.py
-        insert_data(name, age, gender, text_summarization, summarized_text, text_generation,
-                    question, answer, text_translation, language, translated_text)
-        st.success(translator.translate("Dados inseridos com sucesso!"))
+        translated_text = GoogleTranslator(source='auto', target=language).translate(text_translation)
+
+        # Dados a serem enviados para a API
+        data_to_send = {
+            "name": name,
+            "age": age,
+            "gender": gender,
+            "text_summarization": text_summarization,
+            "summarized_text": summarized_text,
+            "text_generation": text_generation,
+            "question": question,
+            "answer": answer,
+            "text_translation": text_translation,
+            "language": language,
+            "translated_text": translated_text
+        }
+
+        # Utilize a função send_data_to_api para enviar os dados para a API
+        send_data_to_api(data_to_send)
+        st.success(translator.translate("Dados enviados com sucesso!"))
 
 # Run the Streamlit app
 if __name__ == '__main__':
     st.set_page_config(page_title="MAKENLP", page_icon=":speech_balloon:")
     translation_language = st.selectbox("Selecione o idioma de tradução:", options=['pt', 'en', 'fr', 'es'])
     translate_page(translation_language)
+
