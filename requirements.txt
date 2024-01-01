@@ -68,6 +68,7 @@ pyasn1-modules==0.3.0
 pydeck==0.8.0
 Pygments==2.16.1
 Pympler==1.0.1
+PyMySQL==1.1.0
 pyparsing==3.0.9
 python-dateutil==2.8.2
 pytz==2023.3
@@ -118,4 +119,3 @@ watchdog==3.0.0
 Werkzeug==3.0.1
 wrapt==1.15.0
 zipp==3.16.2
-mysqlclient==2.1.1
