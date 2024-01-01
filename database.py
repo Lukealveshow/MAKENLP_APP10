@@ -3,9 +3,9 @@ import streamlit as st
 
 db_config = {
     'host': 'localhost',
-    'user': db_username,
-    'password': db_password,
-    'database': 'nome_do_seu_banco'
+    'user': "root",
+    'password': "Luc@s1717##@@",
+    'database': 'data'
 }
 
 def insert_data(name, age, gender, text_summarization, summarized_text, text_generation, question,
