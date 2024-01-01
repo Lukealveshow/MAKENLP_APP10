@@ -25,5 +25,6 @@ def insert_data(name, age, gender, text_summarization, summarized_text, text_gen
         conn.commit()
         cursor.close()
         conn.close()
+        print("Data inserted successfully.")
     except mysql.connector.Error as err:
-        print("MySQL Error:", err)
+        print("MySQL Error during insertion:", err)  
