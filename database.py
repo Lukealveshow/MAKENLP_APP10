@@ -1,6 +1,7 @@
 import mysql.connector
 import streamlit as st
-db_secrets = st.secrets["connections.mysql"]
+db_secrets = st.secrets.get("connections.mysql", {})
+
 
 # Utilize os segredos conforme necessário
 db_username = db_secrets["username"]
