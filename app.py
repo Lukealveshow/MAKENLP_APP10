@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import subprocess
 from deep_translator import GoogleTranslator
 from summarization import summarize_text
 from generation import generate_answer
