@@ -68,7 +68,7 @@ def translate_page(language):
         st.write(translated_text)
     
     # Button to execute all functions and insert into the database
-    if st.button(translator.translate("Enviar")):
+    if st.button(translator.translate("Enviar"), key="botao_enviar"):
         summarized_text = summarize_text(text_summarization)
         answer = generate_answer(question, text_generation)
         translated_text = GoogleTranslator(source='auto', target=selected_language).translate(text_translation)
