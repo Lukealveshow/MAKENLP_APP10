@@ -6,11 +6,12 @@ db_secrets = st.secrets.get("connections.mysql", {})
 # Utilize os segredos conforme necessário
 db_username = db_secrets.get("username", "")
 db_password = db_secrets.get("password", "")
+db_database = db.secrets.get("database", "")
 db_config = {
     'host': 'localhost',
     'user': db_username,
     'password': db_password,
-    'database': 'app'
+    'database': db_database
 }
 def insert_data(name, age, gender, text_summarization, summarized_text, text_generation, question,
                 answer, text_translation, language, translated_text):
