@@ -1,13 +1,17 @@
 import mysql.connector
 import streamlit as st
+db_secrets = st.secrets["connections.mysql"]
+
+# Utilize os segredos conforme necessário
+db_username = db_secrets["username"]
+db_password = db_secrets["password"]
 
 db_config = {
     'host': 'localhost',
-    'user': 'root',
-    'password': 'Luc@s1717##@@',
-    'database': 'data'
+    'user': db_username,
+    'password': db_password,
+    'database': 'nome_do_seu_banco'
 }
-
 def insert_data(name, age, gender, text_summarization, summarized_text, text_generation, question,
                 answer, text_translation, language, translated_text):
     try:
