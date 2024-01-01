@@ -12,6 +12,9 @@ def send_data_to_api(data):
         st.success("Dados enviados com sucesso para a API.")
     else:
         st.error(f"Erro ao enviar dados para a API. Status code: {response.status_code}")
+def start_api():
+    # Inicie o servidor Flask da API como um processo secundário
+    subprocess.Popen(["python", "api.py"])
 def translate_page(language):
     # Using deep_translator for page translation
     translator = GoogleTranslator(source='auto', target=language)
@@ -103,5 +106,5 @@ def translate_page(language):
 if __name__ == '__main__':
     st.set_page_config(page_title="MAKENLP", page_icon=":speech_balloon:")
     translation_language = st.selectbox("Selecione o idioma de tradução:", options=['pt', 'en', 'fr', 'es'])
+    start_api()
     translate_page(translation_language)
-
