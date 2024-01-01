@@ -3,8 +3,8 @@ import streamlit as st
 
 db_config = {
     'host': 'localhost',
-    'user': "root",
-    'password': "Luc@s1717##@@",
+    'user': 'root',
+    'password': 'Luc@s1717##@@',
     'database': 'data'
 }
 
