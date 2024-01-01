@@ -183,7 +183,6 @@ ubuntu-advantage-tools==8001
 ubuntu-drivers-common==0.0.0
 ufw==0.36.1
 unattended-upgrades==0.1
-UNKNOWN @ file:///home/lucasalves/Downloads/mysqlclient-2.2.0
 urllib3==1.26.5
 usb-creator==0.3.7
 virtualenv==20.24.6
