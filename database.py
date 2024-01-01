@@ -4,9 +4,8 @@ db_secrets = st.secrets.get("connections.mysql", {})
 
 
 # Utilize os segredos conforme necessário
-db_username = db_secrets["username"]
-db_password = db_secrets["password"]
-
+db_username = db_secrets.get("username", {})
+db_password = db_secrets.get("password", {})
 db_config = {
     'host': 'localhost',
     'user': db_username,
