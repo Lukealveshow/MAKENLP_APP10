@@ -10,7 +10,7 @@ db_config = {
     'host': 'localhost',
     'user': db_username,
     'password': db_password,
-    'database': 'nome_do_seu_banco'
+    'database': 'data'
 }
 def insert_data(name, age, gender, text_summarization, summarized_text, text_generation, question,
                 answer, text_translation, language, translated_text):
