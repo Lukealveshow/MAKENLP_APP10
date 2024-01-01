@@ -2,7 +2,7 @@ import streamlit as st
 from deep_translator import GoogleTranslator
 from summarization import summarize_text
 from generation import generate_answer
-from database2 import insert_data
+from database3 import insert_data
 
 def translate_page(language):
     # Using deep_translator for page translation
