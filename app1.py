@@ -93,7 +93,7 @@ def translate_page(language):
     if st.button(translator.translate("Enviar")):
         summarized_text = summarize_text(text_summarization)
         answer = generate_answer(question, text_generation)
-        translated_text = GoogleTranslator(source='auto', target=selected_language).translate(text_translation)
+        translated_text = GoogleTranslator(source='auto', target=language).translate(text_translation)
 
         insert_data(name, age, gender, text_summarization, summarized_text, text_generation,
                     question, answer, text_translation, language, translated_text)
