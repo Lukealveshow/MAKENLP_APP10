@@ -16,10 +16,9 @@ def my_hash_func(obj):
 
 @st.cache(hash_funcs={_thread.RLock: my_hash_func, weakref.ReferenceType: my_hash_func})
 def init_connection():
-    # Use o caminho absoluto para o diretório do script
-    script_directory = os.path.dirname(os.path.abspath(__file__))
-    db_path = os.path.join(script_directory, "data.db")
-    connection_config = {"url": f"sqlite:///{db_path}"}
+    connection_config = {
+        "url": st.secrets["connections"]["url"]
+    }
     return sqlite3.connect(connection_config["url"])
 
 @st.cache(allow_output_mutation=True, hash_funcs={_thread.RLock: my_hash_func, weakref.ReferenceType: my_hash_func})
