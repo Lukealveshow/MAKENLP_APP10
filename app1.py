@@ -5,7 +5,7 @@ from deep_translator import GoogleTranslator
 from summarization import summarize_text
 from generation import generate_answer
 import weakref
-# Função para inicializar a conexão com o banco de dados.
+@st.cache(hash_funcs={_thread.RLock: lambda x: None})
 def init_connection():
     connection_config = {
         "host": st.secrets["connections.mysql"]["host"],
@@ -16,7 +16,8 @@ def init_connection():
     }
     return mysql.connector.connect(**connection_config)
 
-# Executa uma consulta SQL.
+@st.cache(allow_output_mutation=True, hash_funcs={mysql.connector.connection.MySQLConnection: id})
+def run_query(query):
 def run_query(query):
     connection = init_connection()
     with connection.cursor(dictionary=True) as cursor:
