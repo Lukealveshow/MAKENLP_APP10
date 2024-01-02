@@ -6,7 +6,13 @@ from summarization import summarize_text
 from generation import generate_answer
 import weakref
 def my_hash_func(conn_config):
-    return hash((conn_config["host"], conn_config["user"], conn_config["database"], conn_config["port"]))
+    host = conn_config.get("host", None)
+    user = conn_config.get("user", None)
+    database = conn_config.get("database", None)
+    port = conn_config.get("port", None)
+    
+    return hash((host, user, database, port))
+
 @st.cache(hash_funcs={mysql.connector.connection.MySQLConnection: id, dict: my_hash_func})
 def init_connection():
     connection_config = {
