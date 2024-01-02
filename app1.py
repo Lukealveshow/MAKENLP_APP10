@@ -39,11 +39,14 @@ def init_connection():
 @st.cache(allow_output_mutation=True, hash_funcs={_thread.RLock: my_hash_func, weakref.ReferenceType: my_hash_func})
 def run_query(query):
     connection = init_connection()
-    with connection.cursor() as cursor:
-        cursor.execute(query)
-        result = cursor.fetchall()
-    connection.close()
-    return result
+    if connection:
+        with connection.cursor() as cursor:
+            cursor.execute(query)
+            result = cursor.fetchall()
+        connection.close()
+        return result
+    else:
+        return None
 
 def insert_data(connection_config, name, age, gender, text_summarization, summarized_text, text_generation, question,
                 answer, text_translation, language, translated_text):
