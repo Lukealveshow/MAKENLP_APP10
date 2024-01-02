@@ -2,7 +2,6 @@ import streamlit as st
 from deep_translator import GoogleTranslator
 from summarization import summarize_text
 from generation import generate_answer
-from database3 import insert_data
 
 def translate_page(language):
     # Using deep_translator for page translation
@@ -66,17 +65,6 @@ def translate_page(language):
         translated_text = GoogleTranslator(source='auto', target=selected_language).translate(text_translation)
         st.subheader(translator.translate("Texto Traduzido"))
         st.write(translated_text)
-    
-    # Button to execute all functions and insert into the database
-    if st.button(translator.translate("Enviar")):
-        summarized_text = summarize_text(text_summarization)
-        answer = generate_answer(question, text_generation)
-        translated_text = GoogleTranslator(source='auto', target=selected_language).translate(text_translation)
-        
-        # Utilize a função insert_data do database.py
-        insert_data(name, age, gender, text_summarization, summarized_text, text_generation,
-                    question, answer, text_translation, language, translated_text)
-        st.success(translator.translate("Dados inseridos com sucesso!"))
 
 # Run the Streamlit app
 if __name__ == '__main__':
