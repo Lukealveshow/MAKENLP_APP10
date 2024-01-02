@@ -3,20 +3,23 @@ import sqlite3
 from deep_translator import GoogleTranslator
 from summarization import summarize_text
 from generation import generate_answer
+import _thread
 
-def my_hash_func(conn_config):
-    url = conn_config.get("url", None)
-    return hash(url)
+# Função para calcular o hash de objetos _thread.RLock
+def my_hash_func(obj):
+    if isinstance(obj, _thread.RLock):
+        return hash(obj)  # ou qualquer outra lógica de hash que você deseje aplicar
+    else:
+        raise TypeError(f"Object of type {type(obj).__name__} is not hashable.")
 
-@st.cache(hash_funcs={sqlite3.Connection: my_hash_func, dict: my_hash_func})
+@st.cache(hash_funcs={_thread.RLock: my_hash_func})
 def init_connection():
     connection_config = {
         "url": st.secrets["connections"]["url"]
     }
     return sqlite3.connect(connection_config["url"])
 
-# Executa uma consulta SQL.
-@st.cache(allow_output_mutation=True, hash_funcs={sqlite3.Connection: my_hash_func})
+@st.cache(allow_output_mutation=True, hash_funcs={_thread.RLock: my_hash_func})
 def run_query(query):
     connection = init_connection()
     with connection.cursor() as cursor:
