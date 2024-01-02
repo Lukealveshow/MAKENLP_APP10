@@ -18,7 +18,6 @@ def init_connection():
 
 @st.cache(allow_output_mutation=True, hash_funcs={mysql.connector.connection.MySQLConnection: id})
 def run_query(query):
-def run_query(query):
     connection = init_connection()
     with connection.cursor(dictionary=True) as cursor:
         cursor.execute(query)
