@@ -5,7 +5,7 @@ from summarization import summarize_text
 from generation import generate_answer
 
 # Função para inicializar a conexão com o banco de dados.
-@st.cache(allow_output_mutation=True, hash_funcs={mysql.connector.connection.MySQLConnection: id})
+@st.cache(allow_output_mutation=True, hash_funcs={_thread.RLock: lambda _: None, mysql.connector.connection.MySQLConnection: id})
 def init_connection():
     connection_config = {
         "host": st.secrets["connections.mysql"]["host"],
