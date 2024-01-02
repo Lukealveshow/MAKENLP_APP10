@@ -1,4 +1,5 @@
 import streamlit as st
+import _thread
 import mysql.connector
 from deep_translator import GoogleTranslator
 from summarization import summarize_text
