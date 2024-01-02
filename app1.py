@@ -4,22 +4,23 @@ from deep_translator import GoogleTranslator
 from summarization import summarize_text
 from generation import generate_answer
 import _thread
+import weakref
 
 # Função para calcular o hash de objetos _thread.RLock
 def my_hash_func(obj):
-    if isinstance(obj, _thread.RLock):
+    if isinstance(obj, (_thread.RLock, weakref.ReferenceType)):
         return hash(obj)  # ou qualquer outra lógica de hash que você deseje aplicar
     else:
         raise TypeError(f"Object of type {type(obj).__name__} is not hashable.")
 
-@st.cache(hash_funcs={_thread.RLock: my_hash_func})
+@st.cache(hash_funcs={_thread.RLock: my_hash_func, weakref.ReferenceType: my_hash_func})
 def init_connection():
     connection_config = {
         "url": st.secrets["connections"]["url"]
     }
     return sqlite3.connect(connection_config["url"])
 
-@st.cache(allow_output_mutation=True, hash_funcs={_thread.RLock: my_hash_func})
+@st.cache(allow_output_mutation=True, hash_funcs={_thread.RLock: my_hash_func, weakref.ReferenceType: my_hash_func})
 def run_query(query):
     connection = init_connection()
     with connection.cursor() as cursor:
@@ -27,7 +28,6 @@ def run_query(query):
         result = cursor.fetchall()
     connection.close()
     return result
-
 def insert_data(connection_config, name, age, gender, text_summarization, summarized_text, text_generation, question,
                 answer, text_translation, language, translated_text):
     try:
