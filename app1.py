@@ -37,6 +37,7 @@ def init_connection():
     except sqlite3.Error as e:
         print(f"Erro ao conectar ao banco de dados: {e}")
         return None
+
 @st.cache(allow_output_mutation=True, hash_funcs={_thread.RLock: my_hash_func, weakref.ReferenceType: my_hash_func})
 def run_query(query):
     connection = init_connection()
@@ -70,6 +71,12 @@ def insert_data(connection_config, name, age, gender, text_summarization, summar
         conn.close()
     except sqlite3.Error as err:
         print("SQLite Error:", err)
+
+# Função para verificar se os dados já existem no banco
+def data_exists(name):
+    query = f"SELECT * FROM app_dados WHERE name = '{name}';"
+    existing_data = run_query(query)
+    return existing_data is not None and len(existing_data) > 0
 
 # Função para traduzir a página.
 def translate_page(language):
@@ -120,27 +127,32 @@ def translate_page(language):
         st.subheader(translator.translate("Texto Traduzido"))
         st.write(translated_text)
 
+    # Bloco onde você chama a função insert_data
     if st.button(translator.translate("Enviar")):
         summarized_text = summarize_text(text_summarization)
         answer = generate_answer(question, text_generation)
         translated_text = GoogleTranslator(source='auto', target=language).translate(text_translation)
 
-        insert_data({"url": "sqlite:///data.db"}, name, age, gender, text_summarization, summarized_text, text_generation,
-                    question, answer, text_translation, language, translated_text)
+        # Verificar se os dados já existem antes de inserir
+        if not data_exists(name):
+            insert_data({"url": "sqlite:///data.db"}, name, age, gender, text_summarization, summarized_text, text_generation,
+                        question, answer, text_translation, language, translated_text)
+            st.success(translator.translate("Dados inseridos com sucesso!"))
 
-        st.success(translator.translate("Dados inseridos com sucesso!"))
+            # Consultar e exibir dados do banco
+            query = "SELECT * FROM app_dados;"
+            data = run_query(query)
 
-        query = "SELECT * FROM app_dados;"
-        data = run_query(query)
-
-        if data is not None:
-            for row in data:
-                st.write(f"Nome: {row[1]}, Idade: {row[2]}, Gênero: {row[3]}")
-                st.write(f"Texto Sumarizado: {row[4]}")
-                st.write(f"Resposta Gerada: {row[8]}")
-                st.write("---")
+            if data is not None:
+                for row in data:
+                    st.write(f"Nome: {row[1]}, Idade: {row[2]}, Gênero: {row[3]}")
+                    st.write(f"Texto Sumarizado: {row[4]}")
+                    st.write(f"Resposta Gerada: {row[8]}")
+                    st.write("---")
+            else:
+                st.warning("Nenhum dado encontrado no banco de dados.")
         else:
-            st.warning("Nenhum dado encontrado no banco de dados.")
+            st.warning(f"Dados para '{name}' já existem no banco de dados. Nenhuma inserção realizada.")
 
 if __name__ == '__main__':
     st.set_page_config(page_title="MAKENLP", page_icon=":speech_balloon:")
