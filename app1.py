@@ -5,7 +5,9 @@ from deep_translator import GoogleTranslator
 from summarization import summarize_text
 from generation import generate_answer
 import weakref
-@st.cache(hash_funcs={_thread.RLock: lambda x: None})
+def my_hash_func(conn_config):
+    return hash((conn_config["host"], conn_config["user"], conn_config["database"], conn_config["port"]))
+@st.cache(hash_funcs={mysql.connector.connection.MySQLConnection: id, dict: my_hash_func})
 def init_connection():
     connection_config = {
         "host": st.secrets["connections.mysql"]["host"],
