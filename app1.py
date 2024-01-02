@@ -1,4 +1,3 @@
-# app.py
 import streamlit as st
 import mysql.connector
 from deep_translator import GoogleTranslator
@@ -26,7 +25,8 @@ def run_query(query):
         result = cursor.fetchall()
     connection.close()
     return result
-def insert_data(name, age, gender, text_summarization, summarized_text, text_generation, question,
+
+def insert_data(connection_config, name, age, gender, text_summarization, summarized_text, text_generation, question,
                 answer, text_translation, language, translated_text):
     try:
         conn = mysql.connector.connect(**connection_config)
@@ -41,6 +41,7 @@ def insert_data(name, age, gender, text_summarization, summarized_text, text_gen
         conn.close()
     except mysql.connector.Error as err:
         print("MySQL Error:", err)
+
 # Função para traduzir a página.
 def translate_page(language):
     # Using deep_translator for page translation
@@ -95,7 +96,7 @@ def translate_page(language):
         answer = generate_answer(question, text_generation)
         translated_text = GoogleTranslator(source='auto', target=language).translate(text_translation)
 
-        insert_data(name, age, gender, text_summarization, summarized_text, text_generation,
+        insert_data(init_connection(), name, age, gender, text_summarization, summarized_text, text_generation,
                     question, answer, text_translation, language, translated_text)
 
         st.success(translator.translate("Dados inseridos com sucesso!"))
