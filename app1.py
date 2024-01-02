@@ -1,11 +1,16 @@
 import streamlit as st
-import os
 import sqlite3
 from deep_translator import GoogleTranslator
 from summarization import summarize_text
 from generation import generate_answer
-import _thread
-import weakref
+
+# Caminho absoluto para o banco de dados SQLite
+db_path = "sqlite:///C:/Users/lmartins/tcc/tcc/data.db"
+
+# Configuração de conexão
+connection_config = {
+    "url": db_path
+}
 
 # Função para calcular o hash de objetos _thread.RLock
 def my_hash_func(obj):
@@ -16,17 +21,6 @@ def my_hash_func(obj):
 
 @st.cache(hash_funcs={_thread.RLock: my_hash_func, weakref.ReferenceType: my_hash_func})
 def init_connection():
-    # Obtenha o caminho do diretório do script
-    script_directory = os.path.dirname(os.path.abspath(__file__))
-
-    # Concatene o caminho do diretório do script com o nome do arquivo do banco de dados
-    db_path = os.path.join(script_directory, "data.db")
-
-    # Atualize a configuração de conexão com o caminho relativo
-    connection_config = {
-        "url": f"sqlite:///{db_path}"
-    }
-
     return sqlite3.connect(connection_config["url"])
 
 @st.cache(allow_output_mutation=True, hash_funcs={_thread.RLock: my_hash_func, weakref.ReferenceType: my_hash_func})
@@ -108,12 +102,12 @@ def translate_page(language):
         answer = generate_answer(question, text_generation)
         translated_text = GoogleTranslator(source='auto', target=language).translate(text_translation)
 
-        insert_data({"url": "sqlite:///data.db"}, name, age, gender, text_summarization, summarized_text, text_generation,
+        insert_data({"url": "sqlite:///C:/Users/lmartins/tcc/tcc/data.db"}, name, age, gender, text_summarization, summarized_text, text_generation,
                     question, answer, text_translation, language, translated_text)
 
         st.success(translator.translate("Dados inseridos com sucesso!"))
 
-        query = "SELECT * FROM info;"
+        query = "SELECT * FROM app_dados;"
         data = run_query(query)
 
         for row in data:
