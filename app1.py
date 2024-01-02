@@ -1,0 +1,101 @@
+# app.py
+import streamlit as st
+import mysql.connector
+from deep_translator import GoogleTranslator
+from summarization import summarize_text
+from generation import generate_answer
+
+# Função para inicializar a conexão com o banco de dados.
+@st.cache(allow_output_mutation=True, hash_funcs={mysql.connector.connection.MySQLConnection: id})
+def init_connection():
+    connection_config = {
+        "host": st.secrets["connections.mysql"]["host"],
+        "user": st.secrets["connections.mysql"]["username"],
+        "password": st.secrets["connections.mysql"]["password"],
+        "database": st.secrets["connections.mysql"]["database"],
+        "port": st.secrets["connections.mysql"]["port"],
+    }
+    return mysql.connector.connect(**connection_config)
+
+# Executa uma consulta SQL.
+@st.cache(allow_output_mutation=True, hash_funcs={mysql.connector.connection.MySQLConnection: id})
+def run_query(query):
+    connection = init_connection()
+    with connection.cursor(dictionary=True) as cursor:
+        cursor.execute(query)
+        result = cursor.fetchall()
+    connection.close()
+    return result
+
+# Função para traduzir a página.
+def translate_page(language):
+    translator = GoogleTranslator(source='auto', target=language)
+    translated_title = translator.translate("Seja Bem Vindo ao MAKENLP")
+    st.title(translated_title)
+
+    name_key = f'name_{language}'
+    translated_name = translator.translate("Nome:")
+    name = st.text_input(translated_name, key=name_key)
+
+    age_key = f'age_{language}'
+    translated_age = translator.translate("Idade:")
+    age = st.number_input(translated_age, step=1, key=age_key)
+
+    gender_key = f'gender_{language}'
+    translated_gender = translator.translate("Gênero:")
+    gender_options = [translator.translate('Masculino'), translator.translate('Feminino')]
+    gender = st.selectbox(translated_gender, options=gender_options, key=gender_key)
+
+    text_summarization_key = f'text_summarization_{language}'
+    translated_text_input = translator.translate("Digite o texto para resumir:")
+    text_summarization = st.text_area(translated_text_input, height=150, key=text_summarization_key)
+
+    text_generation_key = f'text_generation_{language}'
+    translated_text_gen = translator.translate("Digite o texto:")
+    st.subheader(translated_text_gen)
+    text_generation = st.text_area("", height=150, key=text_generation_key)
+
+    question_key = f'question_{language}'
+    translated_question = translator.translate("Faça uma pergunta sobre o texto:")
+    question = st.text_input(translated_question, key=question_key)
+
+    text_translation_key = f'text_translation_{language}'
+    translated_text_trans = translator.translate("Digite o texto para traduzir:")
+    st.subheader(translated_text_trans)
+    text_translation = st.text_area("", height=150, key=text_translation_key)
+
+    language_key = f'language_{language}'
+    translated_lang = translator.translate("Selecione o idioma de destino:")
+    language_options = ['en', 'es', 'fr', 'pt']
+    selected_language = st.selectbox(translated_lang, options=language_options, key=language_key)
+
+    if st.button(translator.translate("Traduzir Texto")):
+        translated_text = GoogleTranslator(source='auto', target=selected_language).translate(text_translation)
+        st.subheader(translator.translate("Texto Traduzido"))
+        st.write(translated_text)
+
+    # Restante do código...
+
+    if st.button(translator.translate("Enviar")):
+        summarized_text = summarize_text(text_summarization)
+        answer = generate_answer(question, text_generation)
+        translated_text = GoogleTranslator(source='auto', target=selected_language).translate(text_translation)
+
+        insert_data(name, age, gender, text_summarization, summarized_text, text_generation,
+                    question, answer, text_translation, language, translated_text)
+
+        st.success(translator.translate("Dados inseridos com sucesso!"))
+
+        query = "SELECT * app_dados;"
+        data = run_query(query)
+
+        for row in data:
+            st.write(f"Nome: {row['name']}, Idade: {row['age']}, Gênero: {row['gender']}")
+            st.write(f"Texto Sumarizado: {row['text_summarization']}")
+            st.write(f"Resposta Gerada: {row['answer']}")
+            st.write("---")
+
+if __name__ == '__main__':
+    st.set_page_config(page_title="MAKENLP", page_icon=":speech_balloon:")
+    translation_language = st.selectbox("Selecione o idioma de tradução:", options=['pt', 'en', 'fr', 'es'])
+    translate_page(translation_language)
