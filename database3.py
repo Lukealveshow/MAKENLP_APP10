@@ -6,10 +6,10 @@ import streamlit as st
 # Utilize os segredos conforme necessário
 
 db_config = {
-    'host': '192.168.0.83',
-    'user': 'LucasAlvesMart',
-    'password': 'Lukealveshow1710##@@',
-    'database': 'data'
+    'host': '',
+    'user': '',
+    'password': '',
+    'database': ''
 }
 
 def insert_data(name, age, gender, text_summarization, summarized_text, text_generation, question,
