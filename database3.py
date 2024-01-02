@@ -6,7 +6,7 @@ import streamlit as st
 # Utilize os segredos conforme necessário
 
 db_config = {
-    'host': '0.0.0.0',
+    'host': '192.168.0.83',
     'user': 'LucasAlvesMart',
     'password': 'Lukealveshow1710##@@',
     'database': 'data'
