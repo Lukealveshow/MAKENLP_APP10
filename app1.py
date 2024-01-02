@@ -3,7 +3,7 @@ import sqlite3
 from deep_translator import GoogleTranslator
 from summarization import summarize_text
 from generation import generate_answer
-
+import _thread
 # Caminho absoluto para o banco de dados SQLite
 db_path = "sqlite:///C:/Users/lmartins/tcc/tcc/data.db"
 
