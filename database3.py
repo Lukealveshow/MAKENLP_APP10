@@ -1,15 +1,14 @@
 import pymysql
 import streamlit as st
 
-db_secrets = st.secrets.get("connections.mysql", {})
+
 
 # Utilize os segredos conforme necessário
-db_username = db_secrets.get("username", "")
-db_password = db_secrets.get("password", "")
+
 db_config = {
-    'host': 'localhost',
-    'user': db_username,
-    'password': db_password,
+    'host': '0.0.0.0',
+    'user': 'LucasAlvesMart',
+    'password': 'Lukealveshow1710##@@',
     'database': 'data'
 }
 
