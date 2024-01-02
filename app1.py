@@ -133,11 +133,14 @@ def translate_page(language):
         query = "SELECT * FROM app_dados;"
         data = run_query(query)
 
-        for row in data:
-            st.write(f"Nome: {row[1]}, Idade: {row[2]}, Gênero: {row[3]}")
-            st.write(f"Texto Sumarizado: {row[4]}")
-            st.write(f"Resposta Gerada: {row[8]}")
-            st.write("---")
+        if data is not None:
+            for row in data:
+                st.write(f"Nome: {row[1]}, Idade: {row[2]}, Gênero: {row[3]}")
+                st.write(f"Texto Sumarizado: {row[4]}")
+                st.write(f"Resposta Gerada: {row[8]}")
+                st.write("---")
+        else:
+            st.warning("Nenhum dado encontrado no banco de dados.")
 
 if __name__ == '__main__':
     st.set_page_config(page_title="MAKENLP", page_icon=":speech_balloon:")
