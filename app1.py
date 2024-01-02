@@ -16,7 +16,7 @@ def my_hash_func(conn_config):
 def init_connection():
     # Forneça diretamente os valores de host, user, password, database e port
     connection_config = {
-        "host": "0.0.0.0",
+        "host": "192.168.144.1",
         "user": "root",
         "password": "roottupa2023",
         "database": "dados",
