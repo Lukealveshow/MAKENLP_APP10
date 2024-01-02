@@ -6,7 +6,7 @@ from generation import generate_answer
 import _thread
 import weakref
 # Caminho absoluto para o banco de dados SQLite
-db_path = "sqlite:///C:/Users/lmartins/tcc/tcc/data.db"
+db_path = "sqlite:///data.db"
 
 # Configuração de conexão
 connection_config = {
@@ -103,7 +103,7 @@ def translate_page(language):
         answer = generate_answer(question, text_generation)
         translated_text = GoogleTranslator(source='auto', target=language).translate(text_translation)
 
-        insert_data({"url": "sqlite:///C:/Users/lmartins/tcc/tcc/data.db"}, name, age, gender, text_summarization, summarized_text, text_generation,
+        insert_data({"url": "sqlite:///data.db"}, name, age, gender, text_summarization, summarized_text, text_generation,
                     question, answer, text_translation, language, translated_text)
 
         st.success(translator.translate("Dados inseridos com sucesso!"))
