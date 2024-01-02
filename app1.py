@@ -14,12 +14,13 @@ def my_hash_func(conn_config):
 
 @st.cache(hash_funcs={mysql.connector.connection.MySQLConnection: id, dict: my_hash_func})
 def init_connection():
+    # Forneça diretamente os valores de host, user, password, database e port
     connection_config = {
-        "host": st.secrets["connections.mysql"]["host"],
-        "user": st.secrets["connections.mysql"]["username"],
-        "password": st.secrets["connections.mysql"]["password"],
-        "database": st.secrets["connections.mysql"]["database"],
-        "port": st.secrets["connections.mysql"]["port"],
+        "host": "0.0.0.0",
+        "user": "root",
+        "password": "roottupa2023",
+        "database": "dados",
+        "port": "3306",
     }
     return mysql.connector.connect(**connection_config)
 
@@ -38,7 +39,7 @@ def insert_data(connection_config, name, age, gender, text_summarization, summar
     try:
         conn = mysql.connector.connect(**connection_config)
         cursor = conn.cursor()
-        insert_query = '''INSERT INTO app_dados(name, age, gender, text_summarization, summarized_text,
+        insert_query = '''INSERT INTO info(name, age, gender, text_summarization, summarized_text,
           text_generation, question, answer, text_translation, language, translated_text)
           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'''
         cursor.execute(insert_query, (name, age, gender, text_summarization, summarized_text, text_generation,
@@ -108,7 +109,7 @@ def translate_page(language):
 
         st.success(translator.translate("Dados inseridos com sucesso!"))
 
-        query = "SELECT * app_dados;"
+        query = "SELECT * info;"
         data = run_query(query)
 
         for row in data:
