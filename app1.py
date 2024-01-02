@@ -1,12 +1,20 @@
 import streamlit as st
+import os
 import sqlite3
 from deep_translator import GoogleTranslator
 from summarization import summarize_text
 from generation import generate_answer
 import _thread
 import weakref
+
 # Caminho absoluto para o banco de dados SQLite
 db_path = "sqlite:///data.db"
+
+# Verificar se o arquivo do banco de dados existe
+if os.path.exists(db_path[10:]):  # Remova o prefixo "sqlite:///"
+    print("O arquivo do banco de dados existe.")
+else:
+    print("O arquivo do banco de dados não foi encontrado.")
 
 # Configuração de conexão
 connection_config = {
