@@ -15,12 +15,13 @@ def my_hash_func(conn_config):
 
 @st.cache(hash_funcs={mysql.connector.connection.MySQLConnection: id, dict: my_hash_func})
 def init_connection():
+    # Forneça diretamente os valores de host, user, password, database e port
     connection_config = {
-        "host": st.secrets["connections.mysql"]["host"],
-        "user": st.secrets["connections.mysql"]["username"],
-        "password": st.secrets["connections.mysql"]["password"],
-        "database": st.secrets["connections.mysql"]["database"],
-        "port": st.secrets["connections.mysql"]["port"],
+        "host": "localhost",
+        "user": "root",
+        "password": "Luc@s1717##@@",
+        "database": "data",
+        "port": "3306",
     }
     return mysql.connector.connect(**connection_config)
 
