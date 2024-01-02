@@ -1,34 +1,25 @@
 import streamlit as st
-import mysql.connector
+import sqlite3
 from deep_translator import GoogleTranslator
 from summarization import summarize_text
 from generation import generate_answer
 
 def my_hash_func(conn_config):
-    host = conn_config.get("host", None)
-    user = conn_config.get("user", None)
-    database = conn_config.get("database", None)
-    port = conn_config.get("port", None)
-    
-    return hash((host, user, database, port))
+    return hash((conn_config["url"],))
 
-@st.cache(hash_funcs={mysql.connector.connection.MySQLConnection: id, dict: my_hash_func})
+@st.cache(hash_funcs={sqlite3.Connection: my_hash_func})
 def init_connection():
-    # Forneça diretamente os valores de host, user, password, database e port
+    # Forneça diretamente a URL do banco de dados SQLite
     connection_config = {
-        "host": "",
-        "user": "root",
-        "password": "",
-        "database": "",
-        "port": "",
+        "url": ""sqlite:///data.db""
     }
-    return mysql.connector.connect(**connection_config)
+    return sqlite3.connect(connection_config["url"])
 
 # Executa uma consulta SQL.
-@st.cache(allow_output_mutation=True, hash_funcs={mysql.connector.connection.MySQLConnection: id})
+@st.cache(allow_output_mutation=True, hash_funcs={sqlite3.Connection: my_hash_func})
 def run_query(query):
     connection = init_connection()
-    with connection.cursor(dictionary=True) as cursor:
+    with connection.cursor() as cursor:
         cursor.execute(query)
         result = cursor.fetchall()
     connection.close()
@@ -37,18 +28,18 @@ def run_query(query):
 def insert_data(connection_config, name, age, gender, text_summarization, summarized_text, text_generation, question,
                 answer, text_translation, language, translated_text):
     try:
-        conn = mysql.connector.connect(**connection_config)
+        conn = sqlite3.connect(connection_config["url"])
         cursor = conn.cursor()
-        insert_query = '''INSERT INTO info(name, age, gender, text_summarization, summarized_text,
+        insert_query = '''INSERT INTO app_dados(name, age, gender, text_summarization, summarized_text,
           text_generation, question, answer, text_translation, language, translated_text)
-          VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'''
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'''
         cursor.execute(insert_query, (name, age, gender, text_summarization, summarized_text, text_generation,
                                       question, answer, text_translation, language, translated_text))
         conn.commit()
         cursor.close()
         conn.close()
-    except mysql.connector.Error as err:
-        print("MySQL Error:", err)
+    except sqlite3.Error as err:
+        print("SQLite Error:", err)
 
 # Função para traduzir a página.
 def translate_page(language):
@@ -104,18 +95,18 @@ def translate_page(language):
         answer = generate_answer(question, text_generation)
         translated_text = GoogleTranslator(source='auto', target=language).translate(text_translation)
 
-        insert_data(init_connection(), name, age, gender, text_summarization, summarized_text, text_generation,
+        insert_data({"url": "sqlite:///app_data.db"}, name, age, gender, text_summarization, summarized_text, text_generation,
                     question, answer, text_translation, language, translated_text)
 
         st.success(translator.translate("Dados inseridos com sucesso!"))
 
-        query = "SELECT * info;"
+        query = "SELECT * FROM info;"
         data = run_query(query)
 
         for row in data:
-            st.write(f"Nome: {row['name']}, Idade: {row['age']}, Gênero: {row['gender']}")
-            st.write(f"Texto Sumarizado: {row['text_summarization']}")
-            st.write(f"Resposta Gerada: {row['answer']}")
+            st.write(f"Nome: {row[1]}, Idade: {row[2]}, Gênero: {row[3]}")
+            st.write(f"Texto Sumarizado: {row[4]}")
+            st.write(f"Resposta Gerada: {row[8]}")
             st.write("---")
 
 if __name__ == '__main__':
