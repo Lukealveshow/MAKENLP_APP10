@@ -5,7 +5,8 @@ from summarization import summarize_text
 from generation import generate_answer
 
 def my_hash_func(conn_config):
-    return hash((conn_config["url"],))
+    url = conn_config.get("url", None)
+    return hash(url)
 
 @st.cache(hash_funcs={sqlite3.Connection: my_hash_func, dict: my_hash_func})
 def init_connection():
