@@ -9,9 +9,8 @@ def my_hash_func(conn_config):
 
 @st.cache(hash_funcs={sqlite3.Connection: my_hash_func})
 def init_connection():
-    # Forneça diretamente a URL do banco de dados SQLite
     connection_config = {
-        "url": ""sqlite:///data.db""
+        "url": st.secrets["connections"]["url"]
     }
     return sqlite3.connect(connection_config["url"])
 
@@ -95,7 +94,7 @@ def translate_page(language):
         answer = generate_answer(question, text_generation)
         translated_text = GoogleTranslator(source='auto', target=language).translate(text_translation)
 
-        insert_data({"url": "sqlite:///app_data.db"}, name, age, gender, text_summarization, summarized_text, text_generation,
+        insert_data({"url": "sqlite:///data.db"}, name, age, gender, text_summarization, summarized_text, text_generation,
                     question, answer, text_translation, language, translated_text)
 
         st.success(translator.translate("Dados inseridos com sucesso!"))
