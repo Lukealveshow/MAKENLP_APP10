@@ -20,7 +20,7 @@ def init_connection():
         "host": "0.0.0.0",
         "user": "root",
         "password": "roottupa2023",
-        "database": "data",
+        "database": "dados",
         "port": "3306",
     }
     return mysql.connector.connect(**connection_config)
