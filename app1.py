@@ -16,11 +16,11 @@ def my_hash_func(conn_config):
 def init_connection():
     # Forneça diretamente os valores de host, user, password, database e port
     connection_config = {
-        "host": "192.168.144.1",
+        "host": "",
         "user": "root",
-        "password": "roottupa2023",
-        "database": "dados",
-        "port": "3306",
+        "password": "",
+        "database": "",
+        "port": "",
     }
     return mysql.connector.connect(**connection_config)
 
