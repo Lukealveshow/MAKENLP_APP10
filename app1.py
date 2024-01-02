@@ -30,8 +30,12 @@ def my_hash_func(obj):
 
 @st.cache(hash_funcs={_thread.RLock: my_hash_func, weakref.ReferenceType: my_hash_func})
 def init_connection():
-    return sqlite3.connect(connection_config["url"])
-
+    try:
+        connection = sqlite3.connect(connection_config["url"])
+        return connection
+    except sqlite3.Error as e:
+        st.error(f"Erro ao conectar ao banco de dados: {e}")
+        return None
 @st.cache(allow_output_mutation=True, hash_funcs={_thread.RLock: my_hash_func, weakref.ReferenceType: my_hash_func})
 def run_query(query):
     connection = init_connection()
