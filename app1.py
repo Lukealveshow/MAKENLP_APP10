@@ -52,9 +52,9 @@ def run_query(query):
         except sqlite3.Error as e:
             print(f"Erro ao executar a consulta: {e}")
             connection.close()
-            return []  # Modificação aqui
+            return None
     else:
-        return []
+        return None
 
 def insert_data(connection_config, name, age, gender, text_summarization, summarized_text, text_generation, question,
                 answer, text_translation, language, translated_text):
@@ -139,20 +139,18 @@ def translate_page(language):
                         question, answer, text_translation, language, translated_text)
             st.success(translator.translate("Dados inseridos com sucesso!"))
 
-            # Consultar e exibir dados do banco
-            query = "SELECT * FROM app_dados;"
-            data = run_query(query)
+        # Consultar e exibir dados do banco
+        query = "SELECT * FROM app_dados;"
+        data = run_query(query)
 
-            if data is not None:
-                for row in data:
-                    st.write(f"Nome: {row[1]}, Idade: {row[2]}, Gênero: {row[3]}")
-                    st.write(f"Texto Sumarizado: {row[4]}")
-                    st.write(f"Resposta Gerada: {row[8]}")
-                    st.write("---")
-            else:
-                st.warning("Nenhum dado encontrado no banco de dados.")
+        if data:
+            for row in data:
+                st.write(f"Nome: {row[1]}, Idade: {row[2]}, Gênero: {row[3]}")
+                st.write(f"Texto Sumarizado: {row[4]}")
+                st.write(f"Resposta Gerada: {row[8]}")
+                st.write("---")
         else:
-            st.warning(f"Dados para '{name}' já existem no banco de dados. Nenhuma inserção realizada.")
+            st.warning("Nenhum dado encontrado no banco de dados.")
 
 if __name__ == '__main__':
     st.set_page_config(page_title="MAKENLP", page_icon=":speech_balloon:")
