@@ -1,21 +1,21 @@
-import mysql.connector
+import toml
+import pymysql
 import streamlit as st
-db_secrets = st.secrets.get("connections.mysql", {})
 
+# Carregar credenciais do secrets.toml
+credentials = toml.load("secrets.toml")["mysql"]
 
-# Utilize os segredos conforme necessário
-db_username = db_secrets.get("username", "")
-db_password = db_secrets.get("password", "")
 db_config = {
-    'host': 'localhost',
-    'user': db_username,
-    'password': db_password,
-    'database': 'data'
+    'host': credentials['host'],
+    'user': credentials['user'],
+    'password': credentials['password'],
+    'database': credentials['database']
 }
+
 def insert_data(name, age, gender, text_summarization, summarized_text, text_generation, question,
                 answer, text_translation, language, translated_text):
     try:
-        conn = mysql.connector.connect(**db_config)
+        conn = pymysql.connect(**db_config)
         cursor = conn.cursor()
         insert_query = '''INSERT INTO app_dados(name, age, gender, text_summarization, summarized_text,
           text_generation, question, answer, text_translation, language, translated_text)
@@ -26,5 +26,5 @@ def insert_data(name, age, gender, text_summarization, summarized_text, text_gen
         cursor.close()
         conn.close()
         print("Data inserted successfully.")
-    except mysql.connector.Error as err:
-        print("MySQL Error during insertion:", err)  
+    except Exception as err:
+        print("Error during insertion:", err)
