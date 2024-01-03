@@ -1,15 +1,16 @@
+import toml
 import pymysql
 import streamlit as st
 
-
-
-# Utilize os segredos conforme necessário
+# Carregar credenciais do secrets.toml
+credentials = toml.load("secrets.toml")["mysql"]
 
 db_config = {
-    'host': '',
-    'user': '',
-    'password': '',
-    'database': ''
+    'host': credentials['host'],
+    'user': credentials['user'],
+    'password': credentials['password'],
+    'database': credentials['database'],
+    'port': credentials.get('port', 3306)  # Use 3306 se a porta não estiver definida no arquivo secrets.toml
 }
 
 def insert_data(name, age, gender, text_summarization, summarized_text, text_generation, question,
@@ -20,21 +21,11 @@ def insert_data(name, age, gender, text_summarization, summarized_text, text_gen
         insert_query = '''INSERT INTO app_dados(name, age, gender, text_summarization, summarized_text,
           text_generation, question, answer, text_translation, language, translated_text)
           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'''
-        
-        # Imprime os valores antes de executar a query
-        print("Valores a serem inseridos:", (name, age, gender, text_summarization, summarized_text, text_generation,
-                                      question, answer, text_translation, language, translated_text))
-        
         cursor.execute(insert_query, (name, age, gender, text_summarization, summarized_text, text_generation,
                                       question, answer, text_translation, language, translated_text))
-        
         conn.commit()
         cursor.close()
         conn.close()
-        
-        # Imprime uma mensagem de sucesso após o commit
-        print("Data committed successfully.")
-        
-        st.success("Dados inseridos com sucesso!")
-    except pymysql.Error as err:
-        print("MySQL Error during insertion:", err)
+        print("Data inserted successfully.")
+    except Exception as err:
+        print("Error during insertion:", err)
