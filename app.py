@@ -68,12 +68,11 @@ def translate_page(language):
 
         # Utilize a função insert_data_mongodb do database.py
         print(name, age, gender, text_summarization, summarized_text, text_generation,
-        question, answer, text_translation, language, translated_text)
+              question, answer, text_translation, language, translated_text)
 
         # Chame a função insert_data depois desta linha
         insert_data(name, age, gender, text_summarization, summarized_text, text_generation,
                     question, answer, text_translation, language, translated_text)
-
 
 # Run the Streamlit app
 if __name__ == '__main__':
