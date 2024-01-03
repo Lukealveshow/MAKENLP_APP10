@@ -4,9 +4,9 @@ import streamlit as st
 # Atribua manualmente o nome de usuário e a senha
 
 db_config = {
-    'host': 'localhost',  # Alterado para conexão local
-    'user': "root",
-    'password': "roottupa2023",
+    'host': '0.0.0.0',  # Alterado para conexão local
+    'user': "LucasAlvesMart",
+    'password': "Lucas17171010",
     'database': 'dados'
 }
 
