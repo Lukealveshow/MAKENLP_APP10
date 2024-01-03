@@ -9,7 +9,8 @@ db_config = {
     'host': credentials['host'],
     'user': credentials['user'],
     'password': credentials['password'],
-    'database': credentials['database']
+    'database': credentials['database'],
+    'port': credentials.get('port', 3306)  # Use 3306 se a porta não estiver definida no arquivo secrets.toml
 }
 
 def insert_data(name, age, gender, text_summarization, summarized_text, text_generation, question,
