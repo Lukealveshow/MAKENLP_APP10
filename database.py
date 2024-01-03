@@ -1,13 +1,16 @@
+import toml
 import pymysql
 import streamlit as st
 
-# Atribua manualmente o nome de usuário e a senha
+# Carregar credenciais do secrets.toml
+credentials = toml.load("secrets.toml")["mysql"]
 
 db_config = {
-    'host': '0.0.0.0',  # Alterado para conexão local
-    'user': "LucasAlvesMart",
-    'password': "Lucas17171010",
-    'database': 'dados'
+    'host': credentials['host'],
+    'user': credentials['user'],
+    'password': credentials['password'],
+    'database': credentials['database'],
+    'port': credentials.get('port', 3306)  # Use 3306 se a porta não estiver definida no arquivo secrets.toml
 }
 
 def insert_data(name, age, gender, text_summarization, summarized_text, text_generation, question,
