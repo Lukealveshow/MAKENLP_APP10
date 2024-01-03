@@ -52,9 +52,9 @@ def run_query(query):
         except sqlite3.Error as e:
             print(f"Erro ao executar a consulta: {e}")
             connection.close()
-            return None
+            return []  # Modificação aqui
     else:
-        return None
+        return []
 
 def insert_data(connection_config, name, age, gender, text_summarization, summarized_text, text_generation, question,
                 answer, text_translation, language, translated_text):
