@@ -6,7 +6,7 @@ credentials = toml.load("secrets.toml")["mysql"]
 
 db_config = {
     'host': credentials['host'],
-    'port': credentials.get('port', 3306)
+    'port': credentials.get('port', 3306),
     'password': credentials['password'],
     'database': credentials['database']
 }
