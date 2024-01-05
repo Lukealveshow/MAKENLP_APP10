@@ -67,23 +67,6 @@ def translate_page(language):
             answer = generate_answer(question, text_generation)
             translated_text = GoogleTranslator(source='auto', target=language).translate(text_translation)
 
-            # Exibição dos dados antes da inserção
-            st.subheader("Dados para Inserção:")
-            st.write(f"Nome: {name}")
-            st.write(f"Idade: {age}")
-            st.write(f"Gênero: {gender}")
-            st.write(f"Texto para Resumo: {text_summarization}")
-            st.write(f"Texto Resumido: {summarized_text}")
-            st.write(f"Texto para Geração: {text_generation}")
-            st.write(f"Pergunta: {question}")
-            st.write(f"Resposta Gerada: {answer}")
-            st.write(f"Texto para Tradução: {text_translation}")
-            st.write(f"Idioma de Destino: {language}")
-            st.write(f"Texto Traduzido: {translated_text}")
-
-            # Utilize a função insert_data do database.py
-            st.success("Processando... Por favor, aguarde.")
-
             # Chame a função insert_data depois desta linha
             insert_data(name, age, gender, text_summarization, summarized_text, text_generation,
                         question, answer, text_translation, language, translated_text)
