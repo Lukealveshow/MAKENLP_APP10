@@ -2,7 +2,7 @@ import toml
 import pymysql
 import streamlit as st
 
-#credentials = toml.load("secrets.toml")["mysql"]
+credentials = toml.load("secrets.toml")["mysql"]
 
 db_config = {
     'host': 'sql3.freesqldatabase.com',
