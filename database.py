@@ -2,13 +2,14 @@ import toml
 import pymysql
 import streamlit as st
 
-credentials = toml.load("secrets.toml")["mysql"]
+#credentials = toml.load("secrets.toml")["mysql"]
 
 db_config = {
-    'host': credentials['host'],
-    'port': credentials.get('port', 3306),
-    'password': credentials['password'],
-    'database': credentials['database']
+    'host': 'sql3.freesqldatabase.com',
+    'port': 3306,
+    'database': 'sql3674795',
+    'username': 'sql3674795',
+    'password': 'FekLG4Q6tE'
 }
 
 def insert_data(name, age, gender, text_summarization, summarized_text, text_generation, question,
