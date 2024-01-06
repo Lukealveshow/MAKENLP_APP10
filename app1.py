@@ -9,7 +9,7 @@ import weakref
 # Função de hash personalizada para objetos não padrão
 def my_hash_func(obj):
     if isinstance(obj, (_thread.RLock, weakref.ReferenceType)):
-        return hash(obj)  # ou qualquer outra lógica de hash que você deseje aplicar
+        return hash(obj)
     else:
         raise TypeError(f"Object of type {type(obj).__name__} is not hashable.")
 
@@ -28,9 +28,10 @@ def cache_insert_data(name, age, gender, text_summarization, summarized_text, te
     try:
         insert_data(name, age, gender, text_summarization, summarized_text, text_generation,
                     question, answer, text_translation, language, translated_text)
-        st.success("Dados inseridos com sucesso!")
+        return True
     except Exception as e:
         st.error(f"Erro durante a inserção: {e}")
+        return False
 
 # Função principal com chamadas às funções de cache
 def translate_page(language):
@@ -88,12 +89,11 @@ def translate_page(language):
             translated_text = GoogleTranslator(source='auto', target=language).translate(text_translation)
 
             # Chamada à função de cache para inserção de dados
-            cache_insert_data(name, age, gender, text_summarization, summarized_text, text_generation,
-                              question, answer, text_translation, language, translated_text)
-            st.success("Dados inseridos com sucesso!")
+            if cache_insert_data(name, age, gender, text_summarization, summarized_text, text_generation,
+                                  question, answer, text_translation, language, translated_text):
+                st.success("Dados inseridos com sucesso!")
         except Exception as e:
             st.error(f"Erro durante a inserção: {e}")
-
 
 # Run the Streamlit app
 if __name__ == '__main__':
