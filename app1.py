@@ -81,7 +81,7 @@ def translate_page(language):
     language_options = ['en', 'es', 'fr', 'pt']
     language = st.selectbox(translated_lang, options=language_options, key='language')
     
-     if st.button(translator.translate("Traduzir Texto")):
+    if st.button(translator.translate("Traduzir Texto")):
         translated_text = GoogleTranslator(source='auto', target=language).translate(text_translation)
         st.subheader(translator.translate("Texto Traduzido"))
         st.write(translated_text)
