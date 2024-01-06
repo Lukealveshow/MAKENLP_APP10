@@ -14,15 +14,15 @@ def my_hash_func(obj):
         raise TypeError(f"Object of type {type(obj).__name__} is not hashable.")
 
 # Decoradores st.cache com hash_funcs
-@st.cache_data(hash_funcs={_thread.RLock: my_hash_func, weakref.ReferenceType: my_hash_func})
+@st.cache(hash_funcs={_thread.RLock: my_hash_func, weakref.ReferenceType: my_hash_func})
 def cache_summarize_text(text_summarization):
     return summarize_text(text_summarization)
 
-@st.cache_data(hash_funcs={_thread.RLock: my_hash_func, weakref.ReferenceType: my_hash_func})
+@st.cache(hash_funcs={_thread.RLock: my_hash_func, weakref.ReferenceType: my_hash_func})
 def cache_generate_answer(question, text_generation):
     return generate_answer(question, text_generation)
 
-@st.cache_data(hash_funcs={_thread.RLock: my_hash_func, weakref.ReferenceType: my_hash_func})
+@st.cache(allow_output_mutation=True, hash_funcs={_thread.RLock: my_hash_func, weakref.ReferenceType: my_hash_func})
 def cache_insert_data(name, age, gender, text_summarization, summarized_text, text_generation,
                       question, answer, text_translation, language, translated_text):
     try:
@@ -32,23 +32,6 @@ def cache_insert_data(name, age, gender, text_summarization, summarized_text, te
     except Exception as e:
         st.error(f"Erro durante a inserção: {e}")
         return False
-
-# Mapeamento de mensagens para diferentes idiomas
-success_messages = {
-    'pt': "Dados inseridos com sucesso!",
-    'en': "Data successfully inserted!",
-    'fr': "Données insérées avec succès!",
-    'es': "Datos insertados correctamente!"
-    # Adicione mais idiomas conforme necessário
-}
-
-error_messages = {
-    'pt': "Erro durante a inserção: {error}",
-    'en': "Error during insertion: {error}",
-    'fr': "Erreur lors de l'insertion : {error}",
-    'es': "Error durante la inserción: {error}"
-    # Adicione mais idiomas conforme necessário
-}
 
 # Função principal com chamadas às funções de cache
 def translate_page(language):
@@ -89,7 +72,6 @@ def translate_page(language):
         answer = cache_generate_answer(question, text_generation)
         st.subheader(translator.translate("Resposta Gerada"))
         st.write(answer)
-    
     # Section for text input and language selection
     translated_text_trans = translator.translate("Digite o texto para traduzir:")
     st.subheader(translated_text_trans)
@@ -99,11 +81,6 @@ def translate_page(language):
     language_options = ['en', 'es', 'fr', 'pt']
     language = st.selectbox(translated_lang, options=language_options, key='language')
     
-    if st.button(translator.translate("Traduzir Texto")):
-        translated_text = GoogleTranslator(source='auto', target=language).translate(text_translation)
-        st.subheader(translator.translate("Texto Traduzido"))
-        st.write(translated_text)
-         
     # Button to execute all functions and insert into the database
     if st.button(translator.translate("Enviar")):
         try:
@@ -114,14 +91,9 @@ def translate_page(language):
             # Chamada à função de cache para inserção de dados
             if cache_insert_data(name, age, gender, text_summarization, summarized_text, text_generation,
                                   question, answer, text_translation, language, translated_text):
-                
-                # Traduzindo a mensagem de sucesso
-                success_message = success_messages.get(language, "Data successfully inserted!")
-                st.success(success_message)
+                st.success("Data successfully inserted!")
         except Exception as e:
-            # Traduzindo a mensagem de erro
-            error_message = error_messages.get(language, f"Error during insertion: {e}")
-            st.error(error_message)
+            st.error(f"Erro durante a inserção: {e}")
 
 # Run the Streamlit app
 if __name__ == '__main__':
