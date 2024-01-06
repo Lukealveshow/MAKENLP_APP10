@@ -60,12 +60,26 @@ def translate_page(language):
         st.subheader(translator.translate("Texto Resumido"))
         st.write(summarized_text)
 
-    # Button to generate answer
+    translated_text_gen = translator.translate("Digite o texto:")
+    st.subheader(translated_text_gen)
+    text_generation = st.text_area("", height=150, key='text_generation')
+    
+    translated_question = translator.translate("Faça uma pergunta sobre o texto:")
+    question = st.text_input(translated_question, key='question')
+    
     if st.button(translator.translate("Gerar Resposta")):
         answer = cache_generate_answer(question, text_generation)
         st.subheader(translator.translate("Resposta Gerada"))
         st.write(answer)
-
+    # Section for text input and language selection
+    translated_text_trans = translator.translate("Digite o texto para traduzir:")
+    st.subheader(translated_text_trans)
+    text_translation = st.text_area("", height=150, key='text_translation')
+    
+    translated_lang = translator.translate("Selecione o idioma de destino:")
+    language_options = ['en', 'es', 'fr', 'pt']
+    language = st.selectbox(translated_lang, options=language_options, key='language')
+    
     # Button to execute all functions and insert into the database
     if st.button(translator.translate("Enviar")):
         try:
@@ -76,6 +90,7 @@ def translate_page(language):
             # Chamada à função de cache para inserção de dados
             cache_insert_data(name, age, gender, text_summarization, summarized_text, text_generation,
                               question, answer, text_translation, language, translated_text)
+            st.success("Dados inseridos com sucesso!")
         except Exception as e:
             st.error(f"Erro durante a inserção: {e}")
 
