@@ -33,6 +33,23 @@ def cache_insert_data(name, age, gender, text_summarization, summarized_text, te
         st.error(f"Erro durante a inserção: {e}")
         return False
 
+# Mapeamento de mensagens para diferentes idiomas
+success_messages = {
+    'pt': "Dados inseridos com sucesso!",
+    'en': "Data successfully inserted!",
+    'fr': "Données insérées avec succès!",
+    'es': "Datos insertados correctamente!"
+    # Adicione mais idiomas conforme necessário
+}
+
+error_messages = {
+    'pt': "Erro durante a inserção: {error}",
+    'en': "Error during insertion: {error}",
+    'fr': "Erreur lors de l'insertion : {error}",
+    'es': "Error durante la inserción: {error}"
+    # Adicione mais idiomas conforme necessário
+}
+
 # Função principal com chamadas às funções de cache
 def translate_page(language):
     translator = GoogleTranslator(source='auto', target=language)
@@ -72,6 +89,7 @@ def translate_page(language):
         answer = cache_generate_answer(question, text_generation)
         st.subheader(translator.translate("Resposta Gerada"))
         st.write(answer)
+    
     # Section for text input and language selection
     translated_text_trans = translator.translate("Digite o texto para traduzir:")
     st.subheader(translated_text_trans)
@@ -96,10 +114,14 @@ def translate_page(language):
             # Chamada à função de cache para inserção de dados
             if cache_insert_data(name, age, gender, text_summarization, summarized_text, text_generation,
                                   question, answer, text_translation, language, translated_text):
-                success_message = translator.translate("Dados inseridos com sucesso!")
+                
+                # Traduzindo a mensagem de sucesso
+                success_message = success_messages.get(language, "Data successfully inserted!")
                 st.success(success_message)
         except Exception as e:
-            st.error(f"Erro durante a inserção: {e}")
+            # Traduzindo a mensagem de erro
+            error_message = error_messages.get(language, f"Error during insertion: {e}")
+            st.error(error_message)
 
 # Run the Streamlit app
 if __name__ == '__main__':
