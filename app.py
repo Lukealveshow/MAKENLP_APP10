@@ -2,10 +2,39 @@ import streamlit as st
 from deep_translator import GoogleTranslator
 from summarization import summarize_text
 from generation import generate_answer
-from database import insert_data
+from database3 import insert_data
+import _thread
+import weakref
 
+# Função de hash personalizada para objetos não padrão
+def my_hash_func(obj):
+    if isinstance(obj, (_thread.RLock, weakref.ReferenceType)):
+        return hash(obj)
+    else:
+        raise TypeError(f"Object of type {type(obj).__name__} is not hashable.")
+
+# Decoradores st.cache com hash_funcs
+@st.cache(hash_funcs={_thread.RLock: my_hash_func, weakref.ReferenceType: my_hash_func})
+def cache_summarize_text(text_summarization):
+    return summarize_text(text_summarization)
+
+@st.cache(hash_funcs={_thread.RLock: my_hash_func, weakref.ReferenceType: my_hash_func})
+def cache_generate_answer(question, text_generation):
+    return generate_answer(question, text_generation)
+
+@st.cache(allow_output_mutation=True, hash_funcs={_thread.RLock: my_hash_func, weakref.ReferenceType: my_hash_func})
+def cache_insert_data(name, age, gender, text_summarization, summarized_text, text_generation,
+                      question, answer, text_translation, language, translated_text):
+    try:
+        insert_data(name, age, gender, text_summarization, summarized_text, text_generation,
+                    question, answer, text_translation, language, translated_text)
+        return True
+    except Exception as e:
+        st.error(f"Erro durante a inserção: {e}")
+        return False
+
+# Função principal com chamadas às funções de cache
 def translate_page(language):
-    # Using deep_translator for page translation
     translator = GoogleTranslator(source='auto', target=language)
     translated_title = translator.translate("Seja Bem Vindo ao MAKENLP")
     st.title(translated_title)
@@ -25,23 +54,22 @@ def translate_page(language):
     translated_text_input = translator.translate("Digite o texto para resumir:")
     st.subheader(translated_text_input)
     text_summarization = st.text_area("", height=150)
-    
+
     # Button to summarize text
     if st.button(translator.translate("Resumir Texto")):
-        summarized_text = summarize_text(text_summarization)
+        summarized_text = cache_summarize_text(text_summarization)
         st.subheader(translator.translate("Texto Resumido"))
         st.write(summarized_text)
-    
+
     translated_text_gen = translator.translate("Digite o texto:")
     st.subheader(translated_text_gen)
     text_generation = st.text_area("", height=150, key='text_generation')
     
     translated_question = translator.translate("Faça uma pergunta sobre o texto:")
     question = st.text_input(translated_question, key='question')
-
-    # Button to generate answer
+    
     if st.button(translator.translate("Gerar Resposta")):
-        answer = generate_answer(question, text_generation)
+        answer = cache_generate_answer(question, text_generation)
         st.subheader(translator.translate("Resposta Gerada"))
         st.write(answer)
 
@@ -53,8 +81,6 @@ def translate_page(language):
     translated_lang = translator.translate("Selecione o idioma de destino:")
     language_options = ['en', 'es', 'fr', 'pt']
     language = st.selectbox(translated_lang, options=language_options, key='language')
-
-    # Button to translate text
     if st.button(translator.translate("Traduzir Texto")):
         translated_text = GoogleTranslator(source='auto', target=language).translate(text_translation)
         st.subheader(translator.translate("Texto Traduzido"))
@@ -63,19 +89,16 @@ def translate_page(language):
     # Button to execute all functions and insert into the database
     if st.button(translator.translate("Enviar")):
         try:
-            summarized_text = summarize_text(text_summarization)
-            answer = generate_answer(question, text_generation)
+            summarized_text = cache_summarize_text(text_summarization)
+            answer = cache_generate_answer(question, text_generation)
             translated_text = GoogleTranslator(source='auto', target=language).translate(text_translation)
 
-            # Chame a função insert_data depois desta linha
-            insert_data(name, age, gender, text_summarization, summarized_text, text_generation,
-                        question, answer, text_translation, language, translated_text)
-
-            success_message = translator.translate("Dados inseridos com sucesso!", target=language)
-            st.success(success_message)
+            # Chamada à função de cache para inserção de dados
+            if cache_insert_data(name, age, gender, text_summarization, summarized_text, text_generation,
+                                  question, answer, text_translation, language, translated_text):
+                st.success("Data successfully inserted!")
         except Exception as e:
             st.error(f"Erro durante a inserção: {e}")
-
 
 # Run the Streamlit app
 if __name__ == '__main__':
