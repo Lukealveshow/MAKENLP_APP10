@@ -96,7 +96,8 @@ def translate_page(language):
             # Chamada à função de cache para inserção de dados
             if cache_insert_data(name, age, gender, text_summarization, summarized_text, text_generation,
                                   question, answer, text_translation, language, translated_text):
-                st.success("Data successfully inserted!")
+                success_message = translator.translate("Dados inseridos com sucesso!", target=language)
+                st.success(success_message)
         except Exception as e:
             st.error(f"Erro durante a inserção: {e}")
 
