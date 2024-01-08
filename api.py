@@ -1,25 +1,11 @@
 import streamlit as st
-import streamlit.ReportThread as ReportThread
-from streamlit.server.Server import Server
 from deep_translator import GoogleTranslator
 from summarization import summarize_text
 from generation import generate_answer
 from database3 import insert_data
 import _thread
 import weakref
-def _get_session():
-    ctx = ReportThread.get_report_ctx().session_id
-    session = None
-    if ctx is not None:
-        session = Server.get_current()._get_session_info(ctx).session
-    return session
 
-# Disable CORS (Cross-Origin Resource Sharing) and enable XSRF protection
-if _get_session():
-    _get_session().set_config_options(
-        server_enableCORS=False,
-        server_enableXsrfProtection=True
-    )
 # Função de hash personalizada para objetos não padrão
 def my_hash_func(obj):
     if isinstance(obj, (_thread.RLock, weakref.ReferenceType)):
@@ -110,7 +96,8 @@ def translate_page(language):
             # Chamada à função de cache para inserção de dados
             if cache_insert_data(name, age, gender, text_summarization, summarized_text, text_generation,
                                   question, answer, text_translation, language, translated_text):
-                st.success("Data successfully inserted!")
+                success_message = translator.translate("Dados inseridos com sucesso!", target=language)
+                st.success(success_message)
         except Exception as e:
             st.error(f"Erro durante a inserção: {e}")
 
