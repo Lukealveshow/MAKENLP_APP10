@@ -22,7 +22,7 @@ def cache_summarize_text(text_summarization):
 def cache_generate_answer(question, text_generation):
     return generate_answer(question, text_generation)
 
-@st.cache_data(allow_output_mutation=True, hash_funcs={_thread.RLock: my_hash_func, weakref.ReferenceType: my_hash_func})
+@st.cache_data(hash_funcs={_thread.RLock: my_hash_func, weakref.ReferenceType: my_hash_func})
 def cache_insert_data(name, age, gender, text_summarization, summarized_text, text_generation,
                       question, answer, text_translation, language, translated_text):
     try:
