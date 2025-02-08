@@ -7,9 +7,9 @@ import streamlit as st
 db_config = {
     'host': 'sql3.freesqldatabase.com',
     'port': 3306,
-    'database': 'sql3689636',
-    'user': 'sql3689636',
-    'password': 'DpcAdnEeaC'
+    'database': 'sql3761714',
+    'user': 'sql3761714',
+    'password': 'LacKlFuVr7'
 }
 
 def insert_data(name, age, gender, text_summarization, summarized_text, text_generation, question,
