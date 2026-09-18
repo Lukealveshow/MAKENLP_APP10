@@ -1,6 +1,5 @@
 import streamlit as st
-
-from deep_translator import GoogleTranslator
+from translation import translate_text
 from deep_translator.exceptions import TooManyRequests
 
 from summarization import summarize_text
